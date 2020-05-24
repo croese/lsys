@@ -56,3 +56,41 @@ func TestDetGen(t *testing.T) {
     }
   }
 }
+
+func TestStochasticGen(t *testing.T) {
+  g := NewStochasticFunc("0", map[string][]Choice{
+    "1": {
+      {1, "11"},
+    },
+    "0": {
+      {0.5, "1[0]0"},
+      {0.5, "0"},
+    },
+  }, func() float64 {
+    return 0.2
+  })
+
+  actual := g.Generate(1)
+  if actual != "0" {
+    t.Fatalf("expected=%q. got=%q",
+      "0", actual)
+  }
+
+  g = NewStochasticFunc("0", map[string][]Choice{
+    "1": {
+      {1, "11"},
+    },
+    "0": {
+      {0.5, "1[0]0"},
+      {0.5, "0"},
+    },
+  }, func() float64 {
+    return 0.75
+  })
+
+  actual = g.Generate(1)
+  if actual != "1[0]0" {
+    t.Fatalf("expected=%q. got=%q",
+      "1[0]0", actual)
+  }
+}
